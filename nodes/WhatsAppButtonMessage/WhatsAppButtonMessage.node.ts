@@ -301,7 +301,7 @@ export class WhatsAppButtonMessage implements INodeType {
 				}
 
 				const response = await axios.post(
-					`https://graph.facebook.com/v21.0/${phoneNumberId}/messages`,
+					`https://graph.facebook.com/v21.0/${phoneNumberId}/messages?access_token=${accessToken}`,
 					messageData,
 					{
 						headers: {
