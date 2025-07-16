@@ -1,12 +1,12 @@
 {
 	"name": "n8n-nodes-genuka",
 	"version": "0.1.0",
-	"description": "",
+	"description": "N8N nodes for Genuka API",
 	"keywords": [
 		"n8n-community-node-package"
 	],
 	"license": "MIT",
-	"homepage": "",
+	"homepage": "https://genuka.com",
 	"author": {
 		"name": "Genuka",
 		"email": "it@genuka.com"
