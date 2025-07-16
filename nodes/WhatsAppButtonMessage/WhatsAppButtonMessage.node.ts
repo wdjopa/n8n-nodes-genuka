@@ -3,6 +3,7 @@ import {
 	type INodeExecutionData,
 	type INodeType,
 	type INodeTypeDescription,
+	LoggerProxy,
 	NodeConnectionType,
 	NodeOperationError,
 } from 'n8n-workflow';
@@ -300,7 +301,7 @@ export class WhatsAppButtonMessage implements INodeType {
 				}
 
 				const response = await axios.post(
-					`https://graph.facebook.com/v18.0/${phoneNumberId}/messages`,
+					`https://graph.facebook.com/v21.0/${phoneNumberId}/messages`,
 					messageData,
 					{
 						headers: {
@@ -321,10 +322,11 @@ export class WhatsAppButtonMessage implements INodeType {
 				});
 			} catch (error) {
 				if (this.continueOnFail()) {
+          LoggerProxy.error(`Erreur lors de l'envoi du message WhatsApp: ${error.message}`);
 					returnData.push({
 						json: {
 							success: false,
-							error: error.message,
+							error: error.response?.data || error.message,
 						},
 					});
 				} else {

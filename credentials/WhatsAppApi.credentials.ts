@@ -43,7 +43,7 @@ export class WhatsAppApi implements ICredentialType {
 
   test: ICredentialTestRequest = {
     request: {
-      baseURL: "https://graph.facebook.com/v18.0",
+      baseURL: "https://graph.facebook.com/v21.0",
       url: "/{{$credentials.phoneNumberId}}",
       method: "GET",
     },

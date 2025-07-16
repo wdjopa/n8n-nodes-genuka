@@ -152,7 +152,7 @@ export class WhatsAppFlowSend implements INodeType {
 				};
 
 				const response = await axios.post(
-					`https://graph.facebook.com/v18.0/${phoneNumberId}/messages`,
+					`https://graph.facebook.com/v21.0/${phoneNumberId}/messages`,
 					messageData,
 					{
 						headers: {
