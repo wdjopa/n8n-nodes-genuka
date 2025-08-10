@@ -31,6 +31,14 @@ export class WhatsAppButtonMessage implements INodeType {
 		],
 		properties: [
 			{
+				displayName: 'Phone Number ID',
+				name: 'phoneNumberId',
+				type: 'string',
+				default: '',
+				required: true,
+				description: 'ID du numéro de téléphone WhatsApp Business',
+			},
+			{
 				displayName: 'Numéro De Téléphone Destinataire',
 				name: 'to',
 				type: 'string',
@@ -209,12 +217,12 @@ export class WhatsAppButtonMessage implements INodeType {
 		const returnData: INodeExecutionData[] = [];
 
 		const credentials = await this.getCredentials('whatsAppApi');
-		const phoneNumberId = credentials.phoneNumberId as string;
 		const accessToken = credentials.accessToken as string;
 
 		for (let i = 0; i < items.length; i++) {
 			try {
 				const to = this.getNodeParameter('to', i) as string;
+				const phoneNumberId = this.getNodeParameter('phoneNumberId', i) as string;
 				const messageType = this.getNodeParameter('messageType', i) as string;
 				const headerText = this.getNodeParameter('headerText', i) as string;
 				const bodyText = this.getNodeParameter('bodyText', i) as string;
@@ -299,6 +307,10 @@ export class WhatsAppButtonMessage implements INodeType {
 						sections: sections,
 					};
 				}
+				LoggerProxy.debug(
+					`Request URL: https://graph.facebook.com/v21.0/${phoneNumberId}/messages?access_token=<PUT YOURS>`,
+				);
+				LoggerProxy.debug(`Request Data: ${JSON.stringify(messageData)}`);
 
 				const response = await axios.post(
 					`https://graph.facebook.com/v21.0/${phoneNumberId}/messages?access_token=${accessToken}`,
@@ -310,7 +322,6 @@ export class WhatsAppButtonMessage implements INodeType {
 						},
 					},
 				);
-
 				returnData.push({
 					json: {
 						success: true,
@@ -322,7 +333,7 @@ export class WhatsAppButtonMessage implements INodeType {
 				});
 			} catch (error) {
 				if (this.continueOnFail()) {
-          LoggerProxy.error(`Erreur lors de l'envoi du message WhatsApp: ${error.message}`);
+					LoggerProxy.error(`Erreur lors de l'envoi du message WhatsApp: ${error.message}`);
 					returnData.push({
 						json: {
 							success: false,

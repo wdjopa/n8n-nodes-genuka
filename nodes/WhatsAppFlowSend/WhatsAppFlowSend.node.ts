@@ -3,6 +3,7 @@ import {
 	type INodeExecutionData,
 	type INodeType,
 	type INodeTypeDescription,
+	LoggerProxy,
 	NodeConnectionType,
 	NodeOperationError,
 } from 'n8n-workflow';
@@ -30,6 +31,14 @@ export class WhatsAppFlowSend implements INodeType {
 		],
 		properties: [
 			{
+				displayName: 'Phone Number ID',
+				name: 'phoneNumberId',
+				type: 'string',
+				default: '',
+				required: true,
+				description: 'ID du numéro de téléphone WhatsApp Business',
+			},
+			{
 				displayName: 'Numéro De Téléphone Destinataire',
 				name: 'to',
 				type: 'string',
@@ -46,15 +55,25 @@ export class WhatsAppFlowSend implements INodeType {
 				required: true,
 				description: 'ID du Flow WhatsApp à envoyer',
 			},
+
 			{
-				displayName: 'Flow Token',
-				name: 'flowToken',
+				displayName: 'Initial Screen',
+				name: 'flowInitialScreen',
 				type: 'string',
-				typeOptions: { password: true },
 				default: '',
 				required: true,
-				description: "Token du Flow pour l'authentification",
+				description: 'ID de l\'écran initial du Flow WhatsApp à envoyer',
 			},
+      
+			// {
+			// 	displayName: 'Flow Token',
+			// 	name: 'flowToken',
+			// 	type: 'string',
+			// 	typeOptions: { password: true },
+			// 	default: '',
+			// 	required: true,
+			// 	description: "Token du Flow pour l'authentification",
+			// },
 			{
 				displayName: 'Texte Du Header',
 				name: 'headerText',
@@ -99,19 +118,20 @@ export class WhatsAppFlowSend implements INodeType {
 		const returnData: INodeExecutionData[] = [];
 
 		const credentials = await this.getCredentials('whatsAppApi');
-		const phoneNumberId = credentials.phoneNumberId as string;
 		const accessToken = credentials.accessToken as string;
 
 		for (let i = 0; i < items.length; i++) {
 			try {
+				const phoneNumberId = this.getNodeParameter('phoneNumberId', i) as string;
 				const to = this.getNodeParameter('to', i) as string;
 				const flowId = this.getNodeParameter('flowId', i) as string;
-				const flowToken = this.getNodeParameter('flowToken', i) as string;
+				// const flowToken = this.getNodeParameter('flowToken', i) as string;
 				const headerText = this.getNodeParameter('headerText', i) as string;
 				const bodyText = this.getNodeParameter('bodyText', i) as string;
 				const footerText = this.getNodeParameter('footerText', i) as string;
 				const buttonText = this.getNodeParameter('buttonText', i) as string;
 				const flowData = this.getNodeParameter('flowData', i) as string;
+				const flowInitialScreen = this.getNodeParameter('flowInitialScreen', i) as string;
 
 				let parsedFlowData = {};
 				try {
@@ -139,11 +159,11 @@ export class WhatsAppFlowSend implements INodeType {
 							parameters: {
 								flow_message_version: '3',
 								flow_id: flowId,
-								flow_token: flowToken,
+								// flow_token: flowToken,
 								flow_cta: buttonText,
 								flow_action: 'navigate',
 								flow_action_payload: {
-									screen: 'WELCOME',
+									screen: flowInitialScreen || 'WELCOME',
 									data: parsedFlowData,
 								},
 							},
@@ -162,6 +182,11 @@ export class WhatsAppFlowSend implements INodeType {
 					},
 				);
 
+        LoggerProxy.debug(
+          `[WhatsappFlowSend] Request URL: https://graph.facebook.com/v21.0/${phoneNumberId}/messages?access_token=<PUT YOURS>`,
+        );
+        LoggerProxy.debug(`[WhatsappFlowSend] Request Data: ${JSON.stringify(messageData)}`);
+
 				returnData.push({
 					json: {
 						success: true,
@@ -176,7 +201,7 @@ export class WhatsAppFlowSend implements INodeType {
 					returnData.push({
 						json: {
 							success: false,
-							error: error.message,
+							error: error.response?.data || error.message,
 						},
 					});
 				} else {

@@ -1,6 +1,6 @@
 ![Banner image](https://user-images.githubusercontent.com/10284570/173569848-c624317f-42b1-45a6-ab09-f0ea3c247648.png)
 
-# n8n-nodes-starter
+# n8n-nodes-genuka (based on n8n-nodes-starter)
 
 This repo contains example nodes to help you get started building your own custom integrations for [n8n](https://n8n.io). It includes the node linter and other dependencies.
 
@@ -39,10 +39,15 @@ These are the basic steps for working with the starter. For detailed guidance on
 10. Update the LICENSE file to use your details.
 11. [Publish](https://docs.npmjs.com/packages-and-modules/contributing-packages-to-the-registry) your package to npm.
 
-## More information
+## More information about n0n-nodes-starter
 
 Refer to our [documentation on creating nodes](https://docs.n8n.io/integrations/creating-nodes/) for detailed information on building your own nodes.
 
-## License
+## Release
 
-[MIT](https://github.com/n8n-io/n8n-nodes-starter/blob/master/LICENSE.md)
+```
+npm run build && npm publish
+```
+
+## Use on n8n
+To use your custom node in n8n private instance on the web interface, you should go to `Settings` > `Community Nodes` and add your custom node package name. For example, if your package is called `n8n-nodes-genuka`, you would add `n8n-nodes-genuka` to the list of community nodes.
