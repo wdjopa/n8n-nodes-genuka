@@ -1,6 +1,6 @@
 {
 	"name": "n8n-nodes-genuka",
-	"version": "0.1.6",
+	"version": "0.1.7",
 	"description": "N8N nodes for Genuka API",
 	"keywords": [
 		"n8n-community-node-package"

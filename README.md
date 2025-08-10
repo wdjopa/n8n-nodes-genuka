@@ -45,6 +45,7 @@ Refer to our [documentation on creating nodes](https://docs.n8n.io/integrations/
 
 ## Release
 
+update the version in `package.json` and run the following command to build and publish your package to npm:
 ```
 npm run build && npm publish
 ```
